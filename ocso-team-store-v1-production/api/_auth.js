@@ -8,17 +8,23 @@ function sign(value) {
   return crypto.createHmac('sha256', secret()).update(value).digest('hex');
 }
 
-function makeToken(role) {
-  const payload = Buffer.from(JSON.stringify({ role, exp: Date.now() + 12 * 60 * 60 * 1000 })).toString('base64url');
-  return `${payload}.${sign(payload)}`;
+function hashCode(value) {
+  return crypto.createHash('sha256').update(String(value || '').trim()).digest('hex');
+}
+
+function makeToken(payload) {
+  const data = Buffer.from(JSON.stringify({ ...payload, exp: Date.now() + 12 * 60 * 60 * 1000 })).toString('base64url');
+  return `${data}.${sign(data)}`;
 }
 
 function readToken(req) {
   const raw = req.headers.cookie || '';
-  const match = raw.match(/(?:^|;\s*)ocso_auth=([^;]+)/);
+  const match = raw.match(/(?:^|;\s*)elc_auth=([^;]+)/) || raw.match(/(?:^|;\s*)ocso_auth=([^;]+)/);
   if (!match) return null;
   const [payload, sig] = decodeURIComponent(match[1]).split('.');
-  if (!payload || !sig || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(sign(payload)))) return null;
+  if (!payload || !sig) return null;
+  const expected = sign(payload);
+  if (sig.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString());
     if (Date.now() > data.exp) return null;
@@ -28,9 +34,9 @@ function readToken(req) {
   }
 }
 
-function setCookie(res, role) {
+function setCookie(res, payload) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', `ocso_auth=${encodeURIComponent(makeToken(role))}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${secure}`);
+  res.setHeader('Set-Cookie', `elc_auth=${encodeURIComponent(makeToken(payload))}; Path=/; HttpOnly; SameSite=Lax; Max-Age=43200${secure}`);
 }
 
 function requireRole(req, res, allowed) {
@@ -44,4 +50,4 @@ function requireRole(req, res, allowed) {
   return auth;
 }
 
-module.exports = { setCookie, requireRole };
+module.exports = { setCookie, requireRole, readToken, hashCode };

@@ -7,6 +7,7 @@ function cleanProduct(body) {
     ? (Array.isArray(body.sizes) ? body.sizes : String(body.sizes || '').split(',')).map(s => String(s).trim()).filter(Boolean)
     : [];
   return {
+    store_id: String(body.store_id || '').replace(/[^a-f0-9-]/gi, ''),
     type,
     code: String(body.code || '').trim(),
     name: String(body.name || '').trim(),
@@ -25,19 +26,17 @@ module.exports = async function handler(req, res) {
   try {
     if (!requireRole(req, res, ['admin'])) return;
     if (req.method === 'GET') {
-      const rows = await supabase('products?select=*&order=archived.asc,type.asc,sort_order.asc,created_at.asc');
+      const storeId = String(req.query.store_id || '').replace(/[^a-f0-9-]/gi, '');
+      if (!storeId) return res.status(400).json({ error: 'Store is required' });
+      const rows = await supabase(`products?store_id=eq.${storeId}&select=*&order=archived.asc,type.asc,sort_order.asc,created_at.asc`);
       return res.status(200).json(rows || []);
     }
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
       const row = cleanProduct(body);
-      if (!row.code || !row.name || !row.image_url) return res.status(400).json({ error: 'Code, name, and image are required' });
-      if (row.type === 'hat' && row.sizes.length === 0) return res.status(400).json({ error: 'At least one hat size is required' });
-      const created = await supabase('products', {
-        method: 'POST',
-        headers: { Prefer: 'return=representation' },
-        body: JSON.stringify(row)
-      });
+      if (!row.store_id || !row.code || !row.name || !row.image_url) return res.status(400).json({ error: 'Store, code, name, and image are required' });
+      if (row.type === 'hat' && row.sizes.length === 0) return res.status(400).json({ error: 'At least one size is required' });
+      const created = await supabase('products', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row) });
       return res.status(201).json(created[0]);
     }
     return res.status(405).json({ error: 'Method not allowed' });
