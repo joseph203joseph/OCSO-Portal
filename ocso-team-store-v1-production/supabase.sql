@@ -35,6 +35,7 @@ create table if not exists public.products (
   sizes jsonb not null default '[]'::jsonb,
   price numeric(10,2) not null default 25,
   active boolean not null default true,
+  archived boolean not null default false,
   sort_order integer not null default 100
 );
 

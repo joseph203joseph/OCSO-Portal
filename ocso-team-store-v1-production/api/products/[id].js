@@ -3,7 +3,7 @@ const { supabase } = require('../_db');
 
 function cleanProduct(body) {
   const patch = {};
-  for (const key of ['type','code','name','label','description','image_url','price','active','sort_order']) {
+  for (const key of ['type','code','name','label','description','image_url','price','active','archived','sort_order']) {
     if (Object.prototype.hasOwnProperty.call(body, key)) patch[key] = body[key];
   }
   if (Object.prototype.hasOwnProperty.call(body, 'sizes')) {
@@ -18,6 +18,7 @@ function cleanProduct(body) {
   if (patch.price !== undefined) patch.price = Number(patch.price || 25);
   if (patch.sort_order !== undefined) patch.sort_order = Number(patch.sort_order || 100);
   if (patch.active !== undefined) patch.active = Boolean(patch.active);
+  if (patch.archived !== undefined) patch.archived = Boolean(patch.archived);
   return patch;
 }
 

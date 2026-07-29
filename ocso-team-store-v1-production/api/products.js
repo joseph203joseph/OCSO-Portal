@@ -16,6 +16,7 @@ function cleanProduct(body) {
     sizes,
     price: Number(body.price || 25),
     active: body.active !== false,
+    archived: body.archived === true,
     sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 100
   };
 }
@@ -24,7 +25,7 @@ module.exports = async function handler(req, res) {
   try {
     if (!requireRole(req, res, ['admin'])) return;
     if (req.method === 'GET') {
-      const rows = await supabase('products?select=*&order=type.asc,sort_order.asc,created_at.asc');
+      const rows = await supabase('products?select=*&order=archived.asc,type.asc,sort_order.asc,created_at.asc');
       return res.status(200).json(rows || []);
     }
     if (req.method === 'POST') {
