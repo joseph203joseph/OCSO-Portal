@@ -1,0 +1,1 @@
+import Admin from './admin';export default function Page(){return <Admin configured={Boolean(process.env.SUPABASE_URL&&process.env.SUPABASE_SERVICE_ROLE_KEY)}/>}

@@ -1,0 +1,1 @@
+import Store from './store';import catalog from '../../data/catalog.json';export default function Page(){return <Store catalog={catalog} squareLink={process.env.SQUARE_PAYMENT_LINK||'https://square.link/u/c4zgZFhq'}/>}

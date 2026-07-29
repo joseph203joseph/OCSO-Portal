@@ -1,0 +1,114 @@
+{
+  "patches": [
+    {
+      "id": "badge",
+      "name": "OCSO Blackout Badge",
+      "division": "SHERIFF'S OFFICE",
+      "desc": "Official OCSO blackout badge patch.",
+      "img": "/images/patches/badge.png"
+    },
+    {
+      "id": "alpha-blackout",
+      "name": "Alpha Squad \u2013 Blackout",
+      "division": "ALPHA SQUAD",
+      "desc": "Official Alpha Squad blackout patch.",
+      "img": "/images/patches/alpha-blackout.png"
+    },
+    {
+      "id": "alpha-color",
+      "name": "Alpha Squad \u2013 Color",
+      "division": "ALPHA SQUAD",
+      "desc": "Official full-color Alpha Squad patch.",
+      "img": "/images/patches/alpha-color.png"
+    }
+  ],
+  "hats": [
+    {
+      "id": "112",
+      "model": "RICHARDSON 112",
+      "name": "Classic Trucker",
+      "desc": "Traditional structured trucker fit with snapback closure.",
+      "tag": "Most Popular",
+      "sizes": [
+        "M/L",
+        "XL"
+      ],
+      "img": "/images/hats/112.png",
+      "scale": 0.36,
+      "top": "35%",
+      "left": "50%"
+    },
+    {
+      "id": "110",
+      "model": "RICHARDSON 110",
+      "name": "Stretch-Fit Trucker",
+      "desc": "Structured trucker profile with flexible fitted sizing.",
+      "tag": "Stretch Fit",
+      "sizes": [
+        "S/M",
+        "L/XL"
+      ],
+      "img": "/images/hats/110.png",
+      "scale": 0.35,
+      "top": "36%",
+      "left": "50%"
+    },
+    {
+      "id": "112pl",
+      "model": "RICHARDSON 112PL",
+      "name": "Adjustable Stretch Trucker",
+      "desc": "Stretch comfort with an adjustable rear closure.",
+      "tag": "Adjustable",
+      "sizes": [
+        "Adjustable"
+      ],
+      "img": "/images/hats/112pl.png",
+      "scale": 0.35,
+      "top": "36%",
+      "left": "50%"
+    },
+    {
+      "id": "c938",
+      "model": "PORT AUTHORITY C938",
+      "name": "Flexfit Delta",
+      "desc": "Premium performance cap with moisture-wicking fabric and stretch fit.",
+      "tag": "Performance",
+      "sizes": [
+        "S/M",
+        "L/XL"
+      ],
+      "img": "/images/hats/c938.png",
+      "scale": 0.34,
+      "top": "34%",
+      "left": "50%"
+    },
+    {
+      "id": "1010-5",
+      "model": "10/10 HATS \u2013 5 PANEL",
+      "name": "5 Panel Waterproof",
+      "desc": "Modern 5 panel performance hat with waterproof technology.",
+      "tag": "Waterproof",
+      "sizes": [
+        "Adjustable"
+      ],
+      "img": "/images/hats/1010-5.png",
+      "scale": 0.31,
+      "top": "37%",
+      "left": "50%"
+    },
+    {
+      "id": "1010-6",
+      "model": "10/10 HATS \u2013 6 PANEL",
+      "name": "6 Panel Waterproof",
+      "desc": "Classic 6 panel performance hat with waterproof technology.",
+      "tag": "Waterproof",
+      "sizes": [
+        "Adjustable"
+      ],
+      "img": "/images/hats/1010-6.png",
+      "scale": 0.31,
+      "top": "37%",
+      "left": "50%"
+    }
+  ]
+}
