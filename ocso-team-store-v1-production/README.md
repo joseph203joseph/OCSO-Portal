@@ -27,3 +27,14 @@ Run `supabase.sql` in Supabase SQL Editor.
 
 ## Current payment workflow
 Orders are saved as pending before the Square payment link opens. Confirm payment in Square and mark the order Paid in the admin dashboard. Automatic payment matching requires the Square Checkout API/webhook phase.
+
+## Product Management Upgrade
+
+1. In Supabase SQL Editor, run `product-management-migration.sql` once.
+2. Replace the existing GitHub project files with this package and commit.
+3. Vercel will redeploy automatically.
+4. Open `/admin`, sign in, and click **Products**.
+
+The Products area supports adding, editing, hiding/showing, deleting, sorting, sizing, and uploading PNG/JPG/WEBP product images up to 3 MB. Existing orders are not changed when a product is edited or deleted.
+
+Important: the current Square payment link charges a fixed $25. Keep active hat prices at $25 until the Square Checkout API is connected.

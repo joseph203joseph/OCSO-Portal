@@ -1,27 +1,5 @@
 const { requireRole } = require('./_auth');
-
-function config() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Database is not configured');
-  return { url: url.replace(/\/$/, ''), key };
-}
-
-async function supabase(path, options = {}) {
-  const { url, key } = config();
-  const response = await fetch(`${url}/rest/v1/${path}`, {
-    ...options,
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    }
-  });
-  const text = await response.text();
-  if (!response.ok) throw new Error(text || 'Database request failed');
-  return text ? JSON.parse(text) : null;
-}
+const { supabase } = require('./_db');
 
 module.exports = async function handler(req, res) {
   try {
@@ -34,6 +12,7 @@ module.exports = async function handler(req, res) {
       if (!requireRole(req, res, ['store', 'admin'])) return;
       const b = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
       const qty = Math.max(1, Math.min(10, Number(b.quantity || 1)));
+      const unitPrice = Number(b.hat && b.hat.price ? b.hat.price : 25);
       const orderNumber = `OCSO-${Date.now().toString().slice(-8)}`;
       const row = {
         order_number: orderNumber,
@@ -50,8 +29,8 @@ module.exports = async function handler(req, res) {
         hat_name: b.hat.name,
         size: String(b.size || ''),
         quantity: qty,
-        unit_price: 25,
-        total: qty * 25,
+        unit_price: unitPrice,
+        total: qty * unitPrice,
         status: 'pending_payment',
         batch_cutoff: b.batchCutoff
       };
