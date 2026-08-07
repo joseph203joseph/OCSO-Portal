@@ -1,11 +1,20 @@
 const { requireRole } = require('./_auth');
 const { supabase } = require('./_db');
 
+function normalizeImages(body) {
+  const raw = Array.isArray(body.image_urls) ? body.image_urls : [];
+  const urls = raw.map(x => String(x || '').trim()).filter(Boolean).slice(0, 3);
+  const legacy = String(body.image_url || '').trim();
+  if (!urls.length && legacy) urls.push(legacy);
+  return urls;
+}
+
 function cleanProduct(body) {
   const type = body.type === 'patch' ? 'patch' : 'hat';
   const sizes = type === 'hat'
     ? (Array.isArray(body.sizes) ? body.sizes : String(body.sizes || '').split(',')).map(s => String(s).trim()).filter(Boolean)
     : [];
+  const image_urls = normalizeImages(body);
   return {
     store_id: String(body.store_id || '').replace(/[^a-f0-9-]/gi, ''),
     type,
@@ -13,7 +22,8 @@ function cleanProduct(body) {
     name: String(body.name || '').trim(),
     label: String(body.label || '').trim(),
     description: String(body.description || '').trim(),
-    image_url: String(body.image_url || '').trim(),
+    image_url: image_urls[0] || '',
+    image_urls,
     sizes,
     price: Number(body.price || 25),
     active: body.active !== false,
@@ -34,7 +44,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
       const row = cleanProduct(body);
-      if (!row.store_id || !row.code || !row.name || !row.image_url) return res.status(400).json({ error: 'Store, code, name, and image are required' });
+      if (!row.store_id || !row.code || !row.name || !row.image_urls.length) return res.status(400).json({ error: 'Store, code, name, and image are required' });
       if (row.type === 'hat' && row.sizes.length === 0) return res.status(400).json({ error: 'At least one size is required' });
       const created = await supabase('products', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row) });
       return res.status(201).json(created[0]);
